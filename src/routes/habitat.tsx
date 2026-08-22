@@ -65,6 +65,18 @@ function HabitatPage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: snapshotQuery.queryKey }),
   });
 
+  const replant = useMutation({
+    mutationFn: async (trayId: string) => {
+      const response = await fetch(`${AGENT_ENDPOINT}/replant`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ trayId }),
+      });
+      if (!response.ok) throw new Error(`Agent returned ${response.status}`);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: snapshotQuery.queryKey }),
+  });
+
   const crewMinutesToday =
     briefing?.facts.crewMinutesToday ?? active.reduce((sum, t) => sum + t.crewMinToday, 0);
   const traysActive = briefing?.facts.traysActive ?? active.length;
