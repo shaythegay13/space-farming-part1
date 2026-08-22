@@ -350,6 +350,7 @@ interface TraySeed {
   status: TrayStatus;
   expectedKg: number;
   crewMinToday: number;
+  replantProposal?: Tray["replantProposal"];
 }
 
 const TRAY_SEEDS: TraySeed[] = [
@@ -364,7 +365,24 @@ const TRAY_SEEDS: TraySeed[] = [
   { trayId: "T9", cropKey: "pepper", areaM2: 2.0, daysRemaining: 41, status: "growing", expectedKg: 4.1, crewMinToday: 5 },
   { trayId: "T10", cropKey: "soybean", areaM2: 4.0, daysRemaining: 56, status: "growing", expectedKg: 3.6, crewMinToday: 3 },
   { trayId: "T11", cropKey: "wheat", areaM2: 5.0, daysRemaining: 64, status: "growing", expectedKg: 4.4, crewMinToday: 3 },
-  { trayId: "T12", cropKey: "sweet_potato", areaM2: 5.0, daysRemaining: -1, status: "harvested", expectedKg: 11.5, crewMinToday: 0 },
+  {
+    trayId: "T12",
+    cropKey: "sweet_potato",
+    areaM2: 5.0,
+    daysRemaining: -1,
+    status: "harvested",
+    expectedKg: 11.5,
+    crewMinToday: 0,
+    replantProposal: {
+      cropKey: "soybean",
+      cropName: cropName("soybean"),
+      areaM2: 5.0,
+      cycleDays: CROPS.find((c) => c.key === "soybean")?.cycleDays ?? 90,
+      reason:
+        "Plan v4 is short on protein after the power cut trimmed T10, and this tray is the only free 5 m² with the clearance soybean needs. Replanting sweet potato here would repeat a crop family you already carry twice.",
+      proposedAt: minsAgo(26),
+    },
+  },
 ];
 
 export const FIXTURE_TRAYS: Tray[] = TRAY_SEEDS.map((seed) => {
@@ -380,6 +398,7 @@ export const FIXTURE_TRAYS: Tray[] = TRAY_SEEDS.map((seed) => {
     status: seed.status,
     expectedKg: seed.expectedKg,
     crewMinToday: seed.crewMinToday,
+    replantProposal: seed.replantProposal ?? null,
   };
 });
 

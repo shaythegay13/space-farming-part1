@@ -6,6 +6,7 @@ import { AGENT_ENDPOINT, snapshotQuery } from "@/lib/astrofarm/client";
 import { relativeTime } from "@/lib/astrofarm/format";
 import type { CrewBriefing, Tray, TrayStatus } from "@/lib/astrofarm/types";
 import { useNow } from "@/hooks/use-now";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/habitat")({
@@ -48,9 +49,26 @@ function HabitatPage() {
   const active = trays.filter((t) => t.status !== "harvested");
   const harvested = trays.filter((t) => t.status === "harvested");
 
+  const [dismissed, setDismissed] = useState<string[]>([]);
+  const proposals = trays.filter(
+    (t) => t.replantProposal && !dismissed.includes(t.trayId),
+  );
+
   const harvest = useMutation({
     mutationFn: async (trayId: string) => {
       const response = await fetch(`${AGENT_ENDPOINT}/harvest`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ trayId }),
+      });
+      if (!response.ok) throw new Error(`Agent returned ${response.status}`);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: snapshotQuery.queryKey }),
+  });
+
+  const replant = useMutation({
+    mutationFn: async (trayId: string) => {
+      const response = await fetch(`${AGENT_ENDPOINT}/replant`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ trayId }),
@@ -89,6 +107,24 @@ function HabitatPage() {
             ))
           )}
         </section>
+
+        {/* 2b. Pending replant proposals — the agent asking, not telling */}
+        {proposals.length > 0 ? (
+          <section className="space-y-4">
+            <h2 className="text-lg font-semibold text-foreground">Waiting on you</h2>
+            {proposals.map((tray) => (
+              <ProposalCard
+                key={tray.trayId}
+                tray={tray}
+                now={now}
+                connected={Boolean(AGENT_ENDPOINT)}
+                pending={replant.isPending && replant.variables === tray.trayId}
+                onPlant={() => replant.mutate(tray.trayId)}
+                onDismiss={() => setDismissed((prev) => [...prev, tray.trayId])}
+              />
+            ))}
+          </section>
+        ) : null}
 
         {/* 3. Tray grid */}
         <section className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -211,6 +247,64 @@ function ActionCard({
   );
 }
 
+function ProposalCard({
+  tray,
+  now,
+  connected,
+  pending,
+  onPlant,
+  onDismiss,
+}: {
+  tray: Tray;
+  now: number;
+  connected: boolean;
+  pending: boolean;
+  onPlant: () => void;
+  onDismiss: () => void;
+}) {
+  const proposal = tray.replantProposal!;
+
+  return (
+    <div className="rounded-lg border border-dashed border-primary/50 bg-primary/5 px-5 py-5">
+      <p className="label-caps text-primary">
+        {tray.trayId} · replant proposed {relativeTime(proposal.proposedAt, now)}
+      </p>
+      <p className="mt-2 text-2xl font-semibold text-foreground">{proposal.cropName}</p>
+      <p className="metric mt-1 text-sm text-muted-foreground">
+        {proposal.areaM2.toFixed(1)} m² · {proposal.cycleDays}-day cycle
+      </p>
+      <p className="mt-3 text-base leading-relaxed text-foreground">{proposal.reason}</p>
+
+      <div className="mt-5 flex flex-wrap items-center gap-3">
+        {connected ? (
+          <Button size="lg" className="h-14 px-8 text-base" disabled={pending} onClick={onPlant}>
+            {pending ? "Sending…" : "Plant it"}
+          </Button>
+        ) : (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span tabIndex={0}>
+                <Button size="lg" className="h-14 px-8 text-base" disabled>
+                  Plant it
+                </Button>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>Agent not connected.</TooltipContent>
+          </Tooltip>
+        )}
+        <Button
+          size="lg"
+          variant="outline"
+          className="h-14 px-8 text-base"
+          onClick={onDismiss}
+        >
+          Not now
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function TrayTile({ tray }: { tray: Tray }) {
   const style = STATUS_STYLE[tray.status];
   const elapsed = Math.min(1, Math.max(0, 1 - tray.daysRemaining / tray.cycleDays));
@@ -239,7 +333,14 @@ function TrayTile({ tray }: { tray: Tray }) {
           style={{ width: `${elapsed * 100}%` }}
         />
       </div>
-      <p className={cn("metric text-sm", style.text)}>{label}</p>
+      <div className="flex flex-wrap items-center gap-2">
+        <p className={cn("metric text-sm", style.text)}>{label}</p>
+        {tray.replantProposal ? (
+          <span className="metric rounded border border-primary/40 px-1.5 py-0.5 text-[10px] text-primary">
+            replant?
+          </span>
+        ) : null}
+      </div>
     </div>
   );
 }

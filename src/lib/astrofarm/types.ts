@@ -200,6 +200,15 @@ export interface Tray {
   status: TrayStatus;
   expectedKg: number;
   crewMinToday: number;
+  /** Agent-authored replant suggestion. Nothing happens until the crew says yes. */
+  replantProposal?: {
+    cropKey: string;
+    cropName: string;
+    areaM2: number;
+    cycleDays: number;
+    reason: string;
+    proposedAt: string;
+  } | null;
 }
 
 export interface CrewBriefing {
