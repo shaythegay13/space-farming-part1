@@ -53,8 +53,6 @@ const RUN_ORDER = [
   },
 ];
 
-export default function noop() {}
-
 function BriefPage() {
   return (
     <main className="mx-auto max-w-[1000px] space-y-8 px-6 py-8">

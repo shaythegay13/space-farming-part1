@@ -2,9 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { snapshotQuery } from "@/lib/astrofarm/client";
-import { dateTime, kg, num, pct, signed } from "@/lib/astrofarm/format";
+import { dateTime, kg, num, pct, relativeTime, signed } from "@/lib/astrofarm/format";
 import { useNow } from "@/hooks/use-now";
-import { relativeTime } from "@/lib/astrofarm/format";
 
 export const Route = createFileRoute("/plans/")({
   loader: ({ context }) => context.queryClient.ensureQueryData(snapshotQuery),
