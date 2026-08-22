@@ -178,3 +178,41 @@ export interface ConsoleSnapshot {
   events: ConstraintEvent[];
   log: AgentLogEntry[];
 }
+
+// ---------------------------------------------------------------------------
+// Crew tablet (/habitat). The tablet knows the calendar and the plan only —
+// there are no sensors in this system.
+// ---------------------------------------------------------------------------
+
+export type TrayStatus = "overdue" | "ready" | "due_soon" | "growing" | "harvested";
+
+export interface Tray {
+  trayId: string;
+  cropKey: string;
+  cropName: string;
+  areaM2: number;
+  plantedOn: string;
+  cycleDays: number;
+  /** negative = past harvest date */
+  daysRemaining: number;
+  status: TrayStatus;
+  expectedKg: number;
+  crewMinToday: number;
+}
+
+export interface CrewBriefing {
+  ts: string;
+  /** 4-6 sentences written by the local model */
+  text: string;
+  facts: {
+    readyNow: { tray: string; crop: string; kg: number; daysLate: number }[];
+    dueWithin3Days: { tray: string; crop: string; inDays: number }[];
+    crewMinutesToday: number;
+    traysActive: number;
+    highestRiskTray: { tray: string; crop: string; risk: number } | null;
+    planVersion: number | null;
+    bindingConstraint: "area" | "power" | "crew" | null;
+    kcalCoveragePct: number | null;
+    lastPlanChange: string | null;
+  };
+}
