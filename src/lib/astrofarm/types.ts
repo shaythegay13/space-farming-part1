@@ -177,6 +177,8 @@ export interface ConsoleSnapshot {
   plans: Plan[];
   events: ConstraintEvent[];
   log: AgentLogEntry[];
+  trays: Tray[];
+  crewBriefing: CrewBriefing | null;
 }
 
 // ---------------------------------------------------------------------------
