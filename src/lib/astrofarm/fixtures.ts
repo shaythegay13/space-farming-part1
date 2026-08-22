@@ -350,6 +350,7 @@ interface TraySeed {
   status: TrayStatus;
   expectedKg: number;
   crewMinToday: number;
+  replantProposal?: Tray["replantProposal"];
 }
 
 const TRAY_SEEDS: TraySeed[] = [
