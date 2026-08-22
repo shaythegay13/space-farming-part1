@@ -48,6 +48,11 @@ function HabitatPage() {
   const active = trays.filter((t) => t.status !== "harvested");
   const harvested = trays.filter((t) => t.status === "harvested");
 
+  const [dismissed, setDismissed] = useState<string[]>([]);
+  const proposals = trays.filter(
+    (t) => t.replantProposal && !dismissed.includes(t.trayId),
+  );
+
   const harvest = useMutation({
     mutationFn: async (trayId: string) => {
       const response = await fetch(`${AGENT_ENDPOINT}/harvest`, {
