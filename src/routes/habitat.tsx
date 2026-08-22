@@ -90,6 +90,24 @@ function HabitatPage() {
           )}
         </section>
 
+        {/* 2b. Pending replant proposals — the agent asking, not telling */}
+        {proposals.length > 0 ? (
+          <section className="space-y-4">
+            <h2 className="text-lg font-semibold text-foreground">Waiting on you</h2>
+            {proposals.map((tray) => (
+              <ProposalCard
+                key={tray.trayId}
+                tray={tray}
+                now={now}
+                connected={Boolean(AGENT_ENDPOINT)}
+                pending={replant.isPending && replant.variables === tray.trayId}
+                onPlant={() => replant.mutate(tray.trayId)}
+                onDismiss={() => setDismissed((prev) => [...prev, tray.trayId])}
+              />
+            ))}
+          </section>
+        ) : null}
+
         {/* 3. Tray grid */}
         <section className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {[...active, ...harvested].map((tray) => (
