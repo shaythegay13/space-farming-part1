@@ -7,7 +7,10 @@ import type {
   Budgets,
   ConsoleSnapshot,
   ConstraintEvent,
+  CrewBriefing,
   Plan,
+  Tray,
+  TrayStatus,
   Weights,
 } from "./types";
 
