@@ -106,7 +106,8 @@ function LibraryPage() {
                   <TableCell className="py-3">
                     <span className="text-sm font-medium text-foreground">{crop.name}</span>
                     <span className="metric block text-[11px] text-muted-foreground">
-                      {crop.category} · {crop.cycleDays}d · risk {num(crop.riskScore, 2)}
+                      {crop.family} · {crop.category} · {crop.cycleDays}d · CRL {crop.crl} · DLI{" "}
+                      {crop.dli} · risk {num(crop.riskScore, 3)}
                     </span>
                   </TableCell>
                   <Num value={num(crop.yieldKgPerM2PerDay, 3)} />
