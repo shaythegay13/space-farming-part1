@@ -4,6 +4,7 @@ import {
   CROPS_BY_KEY,
   getProfile,
   KCAL_TARGET_PER_CREW_DAY,
+  WATER_LOOP_LOSS,
 } from "./data";
 import type {
   Allocation,
@@ -16,8 +17,9 @@ import type {
 } from "./types";
 
 /**
- * Deterministic ESM model. The agent's optimizer owns the numbers; the local
- * model only ever writes prose about them (§5 of the rebuild spec).
+ * Deterministic ESM model, §4 of the architecture doc.
+ * Acceptance test — 1 m² lettuce, iss_orbital, 365 days:
+ * mass 63.4 · volume 129.3 · power 22.2 · cooling 5.1 · crewTime 3.8 · total 223.8
  */
 
 export function cropEsm(
@@ -31,16 +33,19 @@ export function cropEsm(
   }
   const weeks = profile.missionDays / 7;
   const volumeM3 = areaM2 * (crop.heightM + CANOPY_CLEARANCE_M);
-  const powerKw = areaM2 * crop.powerKwPerM2;
+  const powerKw = areaM2 * crop.powerKwPerM2 * (1 - profile.naturalLightFrac);
+  const edibleKg = crop.yieldKgPerM2PerDay * areaM2 * profile.missionDays;
+  const waterMakeupKg = edibleKg * crop.waterLPerKg * WATER_LOOP_LOSS;
 
   return {
-    mass: crop.systemMassKgPerM2 * areaM2,
+    mass: crop.systemMassKgPerM2 * areaM2 + waterMakeupKg,
     volume: volumeM3 * profile.volumeEq,
     power: powerKw * profile.powerEq,
     cooling: powerKw * COOLING_FRACTION * profile.coolingEq,
     crewTime: crop.crewHrPerM2PerWeek * areaM2 * weeks * profile.crewTimeEq,
   };
 }
+
 
 export function esmTotal(breakdown: EsmBreakdown): number {
   return (
@@ -86,7 +91,9 @@ export function summarize(allocations: Allocation[], profileKey: string): MixSum
     vitWeighted += crop.vitScore * allocation.areaM2;
     riskWeighted += crop.riskScore * allocation.areaM2;
     areaUsedM2 += allocation.areaM2;
-    powerUsedKw += crop.powerKwPerM2 * allocation.areaM2;
+    powerUsedKw +=
+      crop.powerKwPerM2 * allocation.areaM2 * (1 - profile.naturalLightFrac);
+
     crewHrPerWeekUsed += crop.crewHrPerM2PerWeek * allocation.areaM2;
   }
 
