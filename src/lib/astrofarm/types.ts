@@ -8,21 +8,29 @@ export interface Crop {
   key: string;
   name: string;
   category: CropCategory;
-  /** Edible biomass, kg fresh mass per m² per day (best case, no loss modeling). */
+  /** Botanical family — used for pest/pathogen diversification checks. */
+  family: string;
+  /** Crop Readiness Level, 1-9 (flight heritage). */
+  crl: number;
+  /** Daily light integral, mol/m²/day. */
+  dli: number;
+  /** Edible biomass, kg fresh mass per m² per day (cycle yield / days to harvest). */
   yieldKgPerM2PerDay: number;
   kcalPerKg: number;
   proteinGPerKg: number;
-  /** Subjective composite, 0-10. Least defensible number in the dataset (§10). */
+  /** Subjective composite, 0-10. ASSUMED, not printed in Table 5. */
   vitScore: number;
-  /** Lighting + small auxiliary term only. Under-counts energy (§10). */
+  /** Full-artificial-light draw; model scales by (1 - naturalLightFrac). */
   powerKwPerM2: number;
   crewHrPerM2PerWeek: number;
   /** Canopy height, m. Clearance is added by the model. */
   heightM: number;
   /** Growth system dry mass, kg per m². */
   systemMassKgPerM2: number;
+  /** Water demand, L per kg edible mass (closed loop; only make-up is launched). */
+  waterLPerKg: number;
   cycleDays: number;
-  /** Crop-failure / operability risk, 0-1 (higher = riskier). */
+  /** §6.1 composite risk, 0-1 (higher = riskier). */
   riskScore: number;
 }
 
@@ -36,8 +44,13 @@ export interface MissionProfile {
   powerEq: number; // kg per kW
   coolingEq: number; // kg per kW thermal
   crewTimeEq: number; // kg per crew-hour
+  /** Surface gravity, g (0 = orbital). */
+  gravity: number;
+  /** Fraction of the lighting load offset by natural insolation. */
+  naturalLightFrac: number;
   notes: string;
 }
+
 
 export interface Budgets {
   areaM2: number;
