@@ -107,8 +107,7 @@ export function summarize(
     areaUsedM2,
     powerUsedKw,
     crewHrPerWeekUsed,
-    ...{ budgets },
-  } as MixSummary;
+  };
 }
 
 export function bindingConstraint(
