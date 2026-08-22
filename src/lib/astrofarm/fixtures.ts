@@ -398,6 +398,7 @@ export const FIXTURE_TRAYS: Tray[] = TRAY_SEEDS.map((seed) => {
     status: seed.status,
     expectedKg: seed.expectedKg,
     crewMinToday: seed.crewMinToday,
+    replantProposal: seed.replantProposal ?? null,
   };
 });
 
