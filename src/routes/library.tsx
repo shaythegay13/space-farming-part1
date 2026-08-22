@@ -51,8 +51,9 @@ function LibraryPage() {
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold text-foreground">Crop library & mission profiles</h1>
         <p className="max-w-3xl text-sm text-muted-foreground">
-          Seeded once, read by the optimizer on every re-plan. Ranking is against the lunar surface
-          reference profile: 1 m² of lettuce lands at ESM ≈ 223.8 kg-eq.
+          Audited Table 5 / Table 2 values, seeded once and read by the optimizer on every re-plan.
+          Ranking is against the ISS-class orbital reference profile: 1 m² of lettuce over a year
+          lands at ESM ≈ 223.8 kg-eq, 58% of it pressurized volume.
         </p>
       </div>
 

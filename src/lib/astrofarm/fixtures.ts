@@ -109,10 +109,10 @@ const DRAFTS: Draft[] = [
       { cropKey: "lettuce", areaM2: 8 },
       { cropKey: "mizuna", areaM2: 5 },
       { cropKey: "kale", areaM2: 4 },
-      { cropKey: "carrot", areaM2: 3 },
+      { cropKey: "pak_choi", areaM2: 3 },
     ],
     rationale:
-      "Power dropped to 8 kW until the array is repaired, and tray 3 spirulina is flagged contaminated, so spirulina is removed from the library for this revision. Total lit area falls by 12 m² and the mix rebalances toward low-wattage leafy crops — mizuna enters, lettuce grows. Protein is now the weak link: soybean alone carries it and crew-day protein drops by roughly a third. Power binds. If the array stays degraded past 30 days the planner should trade vitamin variety for a second protein crop rather than defend the current spread.",
+      "Power dropped to 8 kW until the array is repaired, and tray 3 spirulina is flagged contaminated, so spirulina is removed from the library for this revision. Total lit area falls by 12 m² and the mix rebalances toward low-wattage leafy crops — mizuna and pak choi enter, lettuce grows. Protein is now the weak link: soybean alone carries it and crew-day protein drops by roughly a third. Power binds. If the array stays degraded past 30 days the planner should trade vitamin variety for a second protein crop rather than defend the current spread.",
   },
 ];
 
