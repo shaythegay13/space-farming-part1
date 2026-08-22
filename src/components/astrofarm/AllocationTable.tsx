@@ -7,24 +7,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CROPS_BY_KEY, PROFILES_BY_KEY } from "@/lib/astrofarm/data";
+import { CROPS_BY_KEY, getProfile } from "@/lib/astrofarm/data";
 import { cropEsm, esmTotal } from "@/lib/astrofarm/model";
 import { num, signed } from "@/lib/astrofarm/format";
 import type { Plan } from "@/lib/astrofarm/types";
 
 export function AllocationTable({ plan }: { plan: Plan }) {
-  const profile = PROFILES_BY_KEY[plan.profileKey] ?? PROFILES_BY_KEY["lunar_surface"];
+  const profile = getProfile(plan.profileKey);
   const previousAreas = new Map(
     (plan.diffFromPrevious?.resized ?? []).map((r) => [r.cropKey, r.fromM2]),
   );
   const added = new Set(plan.diffFromPrevious?.added ?? []);
 
   const rows = plan.allocations
-    .map((allocation) => {
+    .flatMap((allocation) => {
       const crop = CROPS_BY_KEY[allocation.cropKey];
+      if (!crop) return [];
       const esm = esmTotal(cropEsm(allocation.cropKey, allocation.areaM2, profile));
       const kcalPerDay = crop.yieldKgPerM2PerDay * allocation.areaM2 * crop.kcalPerKg;
-      return { allocation, crop, esm, kcalPerDay };
+      return [{ allocation, crop, esm, kcalPerDay }];
     })
     .sort((a, b) => b.esm - a.esm);
 

@@ -2,8 +2,8 @@ import {
   CANOPY_CLEARANCE_M,
   COOLING_FRACTION,
   CROPS_BY_KEY,
+  getProfile,
   KCAL_TARGET_PER_CREW_DAY,
-  PROFILES_BY_KEY,
 } from "./data";
 import type {
   Allocation,
@@ -53,7 +53,7 @@ export function esmTotal(breakdown: EsmBreakdown): number {
 }
 
 export function summarize(allocations: Allocation[], profileKey: string): MixSummary {
-  const profile = PROFILES_BY_KEY[profileKey] ?? PROFILES_BY_KEY["lunar_surface"];
+  const profile = getProfile(profileKey);
   const breakdown: EsmBreakdown = {
     mass: 0,
     volume: 0,
@@ -115,7 +115,7 @@ export function bindingConstraint(
     ["power", budgets.powerKw > 0 ? summary.powerUsedKw / budgets.powerKw : 0],
     ["crew", budgets.crewHrPerWeek > 0 ? summary.crewHrPerWeekUsed / budgets.crewHrPerWeek : 0],
   ];
-  return utilisation.sort((a, b) => b[1] - a[1])[0][0];
+  return utilisation.sort((a, b) => b[1] - a[1])[0]?.[0] ?? "area";
 }
 
 export function esmSharePercent(breakdown: EsmBreakdown): Record<keyof EsmBreakdown, number> {

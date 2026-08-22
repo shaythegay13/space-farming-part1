@@ -34,7 +34,7 @@ export function EsmBreakdownChart({ breakdown, totalEsm }: EsmBreakdownChartProp
     color: component.color,
   })).sort((a, b) => b.value - a.value);
 
-  const dominant = data[0];
+  const dominant = data[0] ?? { name: "Pressurized volume", share: 0 };
 
   return (
     <section className="panel px-5 py-4">

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { snapshotQuery } from "@/lib/astrofarm/client";
 import { esmPerKcal, cropEsm, esmTotal } from "@/lib/astrofarm/model";
-import { PROFILES_BY_KEY } from "@/lib/astrofarm/data";
+import { REFERENCE_PROFILE } from "@/lib/astrofarm/data";
 import { num } from "@/lib/astrofarm/format";
 
 export const Route = createFileRoute("/library")({
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/library")({
 
 function LibraryPage() {
   const { data: snapshot } = useSuspenseQuery(snapshotQuery);
-  const profile = PROFILES_BY_KEY["lunar_surface"];
+  const profile = REFERENCE_PROFILE;
 
   const rows = snapshot.crops
     .map((crop) => ({

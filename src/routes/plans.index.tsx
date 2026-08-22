@@ -93,7 +93,7 @@ function PlanHistoryPage() {
   );
 }
 
-function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
+function Stat({ label, value, hint }: { label: string; value: string; hint?: string | undefined }) {
   return (
     <div>
       <p className="label-caps">{label}</p>

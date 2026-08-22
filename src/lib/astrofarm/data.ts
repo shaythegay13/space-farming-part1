@@ -278,6 +278,18 @@ export const PROFILES_BY_KEY: Record<string, MissionProfile> = Object.fromEntrie
   MISSION_PROFILES.map((profile) => [profile.key, profile]),
 );
 
+export const REFERENCE_PROFILE = MISSION_PROFILES.find(
+  (profile) => profile.key === "lunar_surface",
+) as MissionProfile;
+
+export function getProfile(key: string): MissionProfile {
+  return PROFILES_BY_KEY[key] ?? REFERENCE_PROFILE;
+}
+
+export function getCrop(key: string): Crop | undefined {
+  return CROPS_BY_KEY[key];
+}
+
 /** kcal per crew member per day used for the coverage metric. */
 export const KCAL_TARGET_PER_CREW_DAY = 3000;
 
