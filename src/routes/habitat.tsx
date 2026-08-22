@@ -3,6 +3,7 @@ import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-q
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AGENT_ENDPOINT, snapshotQuery } from "@/lib/astrofarm/client";
+import { HabitatChat } from "@/components/astrofarm/HabitatChat";
 import { relativeTime } from "@/lib/astrofarm/format";
 import type { CrewBriefing, Tray, TrayStatus } from "@/lib/astrofarm/types";
 import { useNow } from "@/hooks/use-now";
@@ -390,10 +391,25 @@ function TrayTile({ tray }: { tray: Tray }) {
   );
 }
 
-function Stat({ value, label }: { value: string; label: string }) {
+function Stat({
+  value,
+  label,
+  tone = "flat",
+}: {
+  value: string;
+  label: string;
+  tone?: "flat" | "accent";
+}) {
   return (
     <div className="panel px-5 py-5">
-      <p className="metric text-3xl font-semibold text-foreground">{value}</p>
+      <p
+        className={cn(
+          "metric text-3xl font-semibold",
+          tone === "accent" ? "text-accent" : "text-foreground",
+        )}
+      >
+        {value}
+      </p>
       <p className="mt-1 text-sm text-muted-foreground">{label}</p>
     </div>
   );
