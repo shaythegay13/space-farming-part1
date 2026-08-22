@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BriefRouteImport } from './routes/brief'
 import { Route as LibraryRouteImport } from './routes/library'
+import { Route as RuntimeRouteImport } from './routes/runtime'
 import { Route as PlansIndexRouteImport } from './routes/plans.index'
 import { Route as PlansVersionRouteImport } from './routes/plans.$version'
 
@@ -30,6 +31,11 @@ const LibraryRoute = LibraryRouteImport.update({
   path: '/library',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RuntimeRoute = RuntimeRouteImport.update({
+  id: '/runtime',
+  path: '/runtime',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlansIndexRoute = PlansIndexRouteImport.update({
   id: '/plans/',
   path: '/plans/',
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/brief': typeof BriefRoute
   '/library': typeof LibraryRoute
+  '/runtime': typeof RuntimeRoute
   '/plans/$version': typeof PlansVersionRoute
   '/plans/': typeof PlansIndexRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/brief': typeof BriefRoute
   '/library': typeof LibraryRoute
+  '/runtime': typeof RuntimeRoute
   '/plans/$version': typeof PlansVersionRoute
   '/plans': typeof PlansIndexRoute
 }
@@ -60,21 +68,31 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/brief': typeof BriefRoute
   '/library': typeof LibraryRoute
+  '/runtime': typeof RuntimeRoute
   '/plans/$version': typeof PlansVersionRoute
   '/plans/': typeof PlansIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/brief' | '/library' | '/plans/$version' | '/plans/'
+  fullPaths:
+    '/' | '/brief' | '/library' | '/runtime' | '/plans/$version' | '/plans/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/brief' | '/library' | '/plans/$version' | '/plans'
-  id: '__root__' | '/' | '/brief' | '/library' | '/plans/$version' | '/plans/'
+  to: '/' | '/brief' | '/library' | '/runtime' | '/plans/$version' | '/plans'
+  id:
+    | '__root__'
+    | '/'
+    | '/brief'
+    | '/library'
+    | '/runtime'
+    | '/plans/$version'
+    | '/plans/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BriefRoute: typeof BriefRoute
   LibraryRoute: typeof LibraryRoute
+  RuntimeRoute: typeof RuntimeRoute
   PlansVersionRoute: typeof PlansVersionRoute
   PlansIndexRoute: typeof PlansIndexRoute
 }
@@ -102,6 +120,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/runtime': {
+      id: '/runtime'
+      path: '/runtime'
+      fullPath: '/runtime'
+      preLoaderRoute: typeof RuntimeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/plans/': {
       id: '/plans/'
       path: '/plans'
@@ -123,6 +148,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BriefRoute: BriefRoute,
   LibraryRoute: LibraryRoute,
+  RuntimeRoute: RuntimeRoute,
   PlansVersionRoute: PlansVersionRoute,
   PlansIndexRoute: PlansIndexRoute,
 }
