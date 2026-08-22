@@ -6,6 +6,7 @@ import { AGENT_ENDPOINT, snapshotQuery } from "@/lib/astrofarm/client";
 import { relativeTime } from "@/lib/astrofarm/format";
 import type { CrewBriefing, Tray, TrayStatus } from "@/lib/astrofarm/types";
 import { useNow } from "@/hooks/use-now";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/habitat")({
