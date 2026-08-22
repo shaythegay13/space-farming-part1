@@ -333,7 +333,14 @@ function TrayTile({ tray }: { tray: Tray }) {
           style={{ width: `${elapsed * 100}%` }}
         />
       </div>
-      <p className={cn("metric text-sm", style.text)}>{label}</p>
+      <div className="flex flex-wrap items-center gap-2">
+        <p className={cn("metric text-sm", style.text)}>{label}</p>
+        {tray.replantProposal ? (
+          <span className="metric rounded border border-primary/40 px-1.5 py-0.5 text-[10px] text-primary">
+            replant?
+          </span>
+        ) : null}
+      </div>
     </div>
   );
 }
