@@ -52,11 +52,7 @@ export function esmTotal(breakdown: EsmBreakdown): number {
   );
 }
 
-export function summarize(
-  allocations: Allocation[],
-  profileKey: string,
-  budgets: Budgets,
-): MixSummary {
+export function summarize(allocations: Allocation[], profileKey: string): MixSummary {
   const profile = PROFILES_BY_KEY[profileKey] ?? PROFILES_BY_KEY["lunar_surface"];
   const breakdown: EsmBreakdown = {
     mass: 0,
