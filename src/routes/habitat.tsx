@@ -247,6 +247,64 @@ function ActionCard({
   );
 }
 
+function ProposalCard({
+  tray,
+  now,
+  connected,
+  pending,
+  onPlant,
+  onDismiss,
+}: {
+  tray: Tray;
+  now: number;
+  connected: boolean;
+  pending: boolean;
+  onPlant: () => void;
+  onDismiss: () => void;
+}) {
+  const proposal = tray.replantProposal!;
+
+  return (
+    <div className="rounded-lg border border-dashed border-primary/50 bg-primary/5 px-5 py-5">
+      <p className="label-caps text-primary">
+        {tray.trayId} · replant proposed {relativeTime(proposal.proposedAt, now)}
+      </p>
+      <p className="mt-2 text-2xl font-semibold text-foreground">{proposal.cropName}</p>
+      <p className="metric mt-1 text-sm text-muted-foreground">
+        {proposal.areaM2.toFixed(1)} m² · {proposal.cycleDays}-day cycle
+      </p>
+      <p className="mt-3 text-base leading-relaxed text-foreground">{proposal.reason}</p>
+
+      <div className="mt-5 flex flex-wrap items-center gap-3">
+        {connected ? (
+          <Button size="lg" className="h-14 px-8 text-base" disabled={pending} onClick={onPlant}>
+            {pending ? "Sending…" : "Plant it"}
+          </Button>
+        ) : (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span tabIndex={0}>
+                <Button size="lg" className="h-14 px-8 text-base" disabled>
+                  Plant it
+                </Button>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>Agent not connected.</TooltipContent>
+          </Tooltip>
+        )}
+        <Button
+          size="lg"
+          variant="outline"
+          className="h-14 px-8 text-base"
+          onClick={onDismiss}
+        >
+          Not now
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function TrayTile({ tray }: { tray: Tray }) {
   const style = STATUS_STYLE[tray.status];
   const elapsed = Math.min(1, Math.max(0, 1 - tray.daysRemaining / tray.cycleDays));
