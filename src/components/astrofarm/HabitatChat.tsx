@@ -30,7 +30,7 @@ export function HabitatChat({
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    inputRef.current?.focus();
+    inputRef.current?.focus({ preventScroll: true });
   }, []);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export function HabitatChat({
       ]);
     } finally {
       setThinking(false);
-      inputRef.current?.focus();
+      inputRef.current?.focus({ preventScroll: true });
     }
   }
 
